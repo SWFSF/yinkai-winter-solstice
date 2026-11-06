@@ -99,6 +99,8 @@ const state = {
 
 const atmosphereContext = elements.atmosphere.getContext("2d", { alpha: false });
 const frostContext = elements.frost.getContext("2d");
+const backdropCanvas = document.createElement("canvas");
+const backdropContext = backdropCanvas.getContext("2d", { alpha: false });
 let audioContext = null;
 let width = 0;
 let height = 0;
@@ -155,9 +157,9 @@ function createScene() {
 }
 
 function drawBackdrop() {
-  atmosphereContext.clearRect(0, 0, width, height);
+  backdropContext.clearRect(0, 0, width, height);
 
-  let gradient = atmosphereContext.createRadialGradient(
+  let gradient = backdropContext.createRadialGradient(
     width * 0.73,
     height * 0.2,
     0,
@@ -168,10 +170,10 @@ function drawBackdrop() {
   gradient.addColorStop(0, "#17384b");
   gradient.addColorStop(0.34, "#091a27");
   gradient.addColorStop(1, "#040912");
-  atmosphereContext.fillStyle = gradient;
-  atmosphereContext.fillRect(0, 0, width, height);
+  backdropContext.fillStyle = gradient;
+  backdropContext.fillRect(0, 0, width, height);
 
-  gradient = atmosphereContext.createRadialGradient(
+  gradient = backdropContext.createRadialGradient(
     width * 0.7,
     height * 0.18,
     0,
@@ -181,10 +183,10 @@ function drawBackdrop() {
   );
   gradient.addColorStop(0, "rgba(209, 236, 248, 0.18)");
   gradient.addColorStop(1, "rgba(209, 236, 248, 0)");
-  atmosphereContext.fillStyle = gradient;
-  atmosphereContext.fillRect(0, 0, width, height);
+  backdropContext.fillStyle = gradient;
+  backdropContext.fillRect(0, 0, width, height);
 
-  gradient = atmosphereContext.createRadialGradient(
+  gradient = backdropContext.createRadialGradient(
     width * 0.7,
     height * 0.66,
     0,
@@ -195,8 +197,12 @@ function drawBackdrop() {
   gradient.addColorStop(0, "rgba(229, 157, 82, 0.2)");
   gradient.addColorStop(0.38, "rgba(157, 88, 40, 0.07)");
   gradient.addColorStop(1, "rgba(157, 88, 40, 0)");
-  atmosphereContext.fillStyle = gradient;
-  atmosphereContext.fillRect(0, 0, width, height);
+  backdropContext.fillStyle = gradient;
+  backdropContext.fillRect(0, 0, width, height);
+}
+
+function paintBackdrop() {
+  atmosphereContext.drawImage(backdropCanvas, 0, 0, width, height);
 }
 
 function drawStars(time) {
@@ -403,8 +409,10 @@ function resize() {
   dpr = Math.min(window.devicePixelRatio || 1, 2);
   setupCanvas(elements.atmosphere, atmosphereContext);
   setupCanvas(elements.frost, frostContext);
+  setupCanvas(backdropCanvas, backdropContext);
   createScene();
   drawBackdrop();
+  paintBackdrop();
   drawStars(0);
   drawSnow(0, 0);
   drawFrost();
@@ -414,10 +422,10 @@ function resize() {
 function renderFrame(time) {
   const delta = Math.min(0.05, (time - (lastFrame || time)) / 1000);
   lastFrame = time;
-  drawBackdrop();
+  paintBackdrop();
   drawStars(time);
   drawSnow(time, delta);
-  if (isDocumentVisible) {
+  if (isDocumentVisible && !REDUCED_MOTION.matches) {
     animationFrame = requestAnimationFrame(renderFrame);
   }
 }
@@ -425,7 +433,9 @@ function renderFrame(time) {
 function ensureAnimation() {
   cancelAnimationFrame(animationFrame);
   lastFrame = 0;
-  if (isDocumentVisible) {
+  if (isDocumentVisible && REDUCED_MOTION.matches) {
+    renderFrame(performance.now());
+  } else if (isDocumentVisible) {
     animationFrame = requestAnimationFrame(renderFrame);
   }
 }
