@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#040912">
+  <meta name="description" content="一扇会结霜的冬窗，和八封写给尹锴的冬至祝福。">
+  <meta name="color-scheme" content="dark">
+  <title>尹锴，冬至安好</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23040912'/%3E%3Cg fill='none' stroke='%23e4f0f6' stroke-linecap='round' stroke-width='1.4'%3E%3Cpath d='M16 5v22M6.5 10.5l19 11M6.5 21.5l19-11M16 5l-3.5 3.5M16 5l3.5 3.5M16 27l-3.5-3.5M16 27l3.5-3.5'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <svg class="svg-defs" aria-hidden="true">
+    <symbol id="snowflake" viewBox="0 0 32 32">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.05">
+        <path d="M16 3v26M4.7 9.5l22.6 13M4.7 22.5l22.6-13"/>
+        <path d="M16 3l-4 4M16 3l4 4M16 29l-4-4M16 29l4-4"/>
+        <path d="M4.7 9.5l5.5.9M4.7 9.5l1.7 5.3M27.3 22.5l-5.5-.9M27.3 22.5l-1.7-5.3"/>
+        <path d="M4.7 22.5l5.5-.9M4.7 22.5l1.7-5.3M27.3 9.5l-5.5.9M27.3 9.5l-1.7 5.3"/>
+      </g>
+    </symbol>
+    <symbol id="arrow-left" viewBox="0 0 16 16">
+      <path d="M13 8H3m4-4L3 8l4 4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"/>
+    </symbol>
+    <symbol id="arrow-right" viewBox="0 0 16 16">
+      <path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"/>
+    </symbol>
+  </svg>
+
+  <canvas id="atmosphere" aria-hidden="true"></canvas>
+  <div class="warm-haze" aria-hidden="true"></div>
+  <canvas id="frost" aria-hidden="true"></canvas>
+
+  <main class="stage" id="stage">
+    <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="true" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 9v6h4l5 4V5L9 9H5Z"/>
+        <path class="sound-wave" d="M17 8.5c1.2 1.9 1.2 5.1 0 7M19.5 6.5c2.5 3.2 2.5 7.8 0 11"/>
+      </svg>
+      <span id="soundLabel">风铃 开</span>
+    </button>
+
+    <section class="view gate" id="gateView" aria-labelledby="gateTitle">
+      <h1 class="gate-title" id="gateTitle">
+        <span>尹锴</span>
+        <span>冬至安好</span>
+      </h1>
+      <p class="gate-lede">今夜漫长，愿所有寒意都止于窗外</p>
+
+      <button class="open-orbit" id="openButton" type="button" aria-describedby="wipeHint">
+        <span class="orbit orbit-outer" aria-hidden="true"></span>
+        <span class="orbit orbit-inner" aria-hidden="true"></span>
+        <span class="open-label">擦开</span>
+      </button>
+      <p class="wipe-hint" id="wipeHint">按住霜面，慢慢推开冬夜</p>
+      <p class="date-mark">冬至 · 二〇二六</p>
+    </section>
+
+    <section class="view map" id="mapView" aria-labelledby="mapTitle" hidden>
+      <header class="map-heading">
+        <p class="name-seal" id="nameSeal">致 尹 锴</p>
+        <h1 id="mapTitle" tabindex="-1">
+          <span id="mapTitleTop">长夜有尽</span>
+          <span id="mapTitleBottom">愿你有光</span>
+        </h1>
+        <p class="map-prompt" id="mapPrompt">轻触一枚雪光，拆一封冬笺</p>
+        <p class="progress" id="progress" role="status" aria-live="polite">已拾 零 封 · 共 八 封</p>
+      </header>
+
+      <div class="constellation" id="constellation" aria-label="八封冬笺">
+        <svg class="constellation-line" viewBox="0 0 340 248" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M31 203C61 178 81 154 106 132S145 111 166 87S207 60 237 48S291 34 309 21"/>
+        </svg>
+        <button class="flake" type="button" data-blessing="0" style="--x:9%;--y:80%" aria-label="打开第一封冬笺：冬安">
+          <svg aria-hidden="true"><use href="#snowflake"></use></svg>
+        </button>
+        <button class="flake" type="button" data-blessing="1" style="--x:20%;--y:67%" aria-label="打开第二封冬笺：好眠">
+          <svg aria-hidden="true"><use href="#snowflake"></use></svg>
+        </button>
+        <button class="flake" type="button" data-blessing="2" style="--x:32%;--y:52%" aria-label="打开第三封冬笺：留灯">
+          <svg aria-hidden="true"><use href="#snowflake"></use></svg>
+        </button>
+        <button class="flake" type="button" data-blessing="3" style="--x:53%;--y:34%" aria-label="打开第四封冬笺：从容">
+          <svg aria-hidden="true"><use href="#snowflake"></use></svg>
+        </button>
+        <button class="flake flake-warm" type="button" data-blessing="4" style="--x:68%;--y:20%" aria-label="打开第五封冬笺：相见">
+          <svg aria-hidden="true"><use href="#snowflake"></use></svg>
+        </button>
+        <button class="flake" type="button" data-blessing="5" style="--x:80%;--y:31%" aria-label="打开第六封冬笺：远行">
+          <svg aria-hidden="true"><use href="#snowflake"></use></svg>
+        </button>
+        <button class="flake" type="button" data-blessing="6" style="--x:82%;--y:59%" aria-label="打开第七封冬笺：来春">
+          <svg aria-hidden="true"><use href="#snowflake"></use></svg>
+        </button>
+        <button class="flake" type="button" data-blessing="7" style="--x:70%;--y:83%" aria-label="打开第八封冬笺：常安">
+          <svg aria-hidden="true"><use href="#snowflake"></use></svg>
+        </button>
+      </div>
+
+      <p class="map-footer" id="mapFooter">雪光还未亮起 · 轻轻碰一碰</p>
+      <div class="completion-actions" id="completionActions" hidden>
+        <button class="text-button" id="replayButton" type="button">从头再看</button>
+        <span class="action-dot" aria-hidden="true"></span>
+        <button class="text-button" id="refrostButton" type="button">重新覆霜</button>
+      </div>
+    </section>
+
+    <section class="view letter" id="letterView" aria-labelledby="letterQuote" hidden>
+      <p class="folio" id="letterFolio">第 一 封 · 冬 安</p>
+      <blockquote id="letterQuote" tabindex="-1">
+        <p id="letterLines"></p>
+      </blockquote>
+      <span class="letter-rule" aria-hidden="true"></span>
+      <p class="letter-signature" id="letterSignature">冬夜很长，记得慢慢走 · 致尹锴</p>
+      <nav class="letter-controls" aria-label="冬笺阅读控制">
+        <button class="letter-control" id="previousButton" type="button">
+          <svg aria-hidden="true"><use href="#arrow-left"></use></svg>
+          <span>上一封</span>
+        </button>
+        <button class="letter-control letter-control-center" id="backButton" type="button">回到星图</button>
+        <button class="letter-control letter-control-next" id="nextButton" type="button">
+          <span>下一封</span>
+          <svg aria-hidden="true"><use href="#arrow-right"></use></svg>
+        </button>
+      </nav>
+    </section>
+  </main>
+
+  <div class="sr-only" id="announcer" aria-live="polite" aria-atomic="true"></div>
+  <noscript>
+    <p class="noscript">请开启 JavaScript 后查看这封冬至祝福。</p>
+  </noscript>
+</body>
+</html>
